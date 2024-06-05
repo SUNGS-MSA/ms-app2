@@ -1,0 +1,74 @@
+########################################################################
+##### config client : Config server 를 활용하는 개별App 이므로
+##### , 여기설정 파일에는 config server 연결정보만 정의하고, 나머지 설정은 config server를 통해 가져온다.
+########################################################################
+
+
+server:
+  port: ${service_port:8091}
+
+spring:
+  application:
+    name: ms-app2
+
+
+  profiles:
+    active: ${profile:local}
+
+
+
+#logging:
+#  level:
+#    root: 'debug' 
+
+
+--- #local 환경
+spring:
+  config:
+    activate:
+      on-profile: local
+      
+    import: "optional:configserver:http://localhost:9001" # 클라우드 2020.0 버전이후 최신 버전에서는 spring.config.import 속성을 사용하는 것이 권장
+    #optional 은 config서버와 통신시 실패하면 내부의 내부설정 정보를 읽게 된다(통신실패시 에러발생후 종료하고 싶으면 'optional:' 부분을 제거하면됨 )
+
+
+  cloud:
+    config: # Ex) `http://localhost:9900/config/test`
+      #enabled: false #config서버를 사용하고 싶지 않을때 false로 선안하면 된다(디폴트는 true)
+      name: ${spring.application.name} #앱명(디렉토리명), config name
+      profile: local,common # config profile
+
+--- #dev 환경
+spring:
+  config:
+    activate:
+      on-profile: dev
+      
+    import: "optional:configserver:http://localhost:9001" # 클라우드 2020.0 버전이후 최신 버전에서는 spring.config.import 속성을 사용하는 것이 권장
+    #optional 은 config서버와 통신시 실패하면 내부의 내부설정 정보를 읽게 된다(통신실패시 에러발생후 종료하고 싶으면 'optional:' 부분을 제거하면됨 )
+
+  cloud:
+    config: # Ex) `http://localhost:9900/config/test`
+      #enabled: false #config서버를 사용하고 싶지 않을때 false로 선안하면 된다(디폴트는 true)
+      name: ${spring.application.name} #앱명(디렉토리명), config name
+      profile: dev,common # config profile
+
+
+--- #prod 환경
+spring:
+  config:
+    activate:
+      on-profile: prod
+      
+    import: "optional:configserver:http://localhost:9001" # 클라우드 2020.0 버전이후 최신 버전에서는 spring.config.import 속성을 사용하는 것이 권장
+    #optional 은 config서버와 통신시 실패하면 내부의 내부설정 정보를 읽게 된다(통신실패시 에러발생후 종료하고 싶으면 'optional:' 부분을 제거하면됨 )
+
+    
+  cloud:
+    config: # Ex) `http://localhost:9900/config/test`
+      #enabled: false #config서버를 사용하고 싶지 않을때 false로 선안하면 된다(디폴트는 true)
+      name: ${spring.application.name} #앱명(디렉토리명), config name
+      profile: prod,common # config profile
+      
+      
+      
